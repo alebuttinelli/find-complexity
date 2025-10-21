@@ -12,6 +12,8 @@ import spacy
 from collections import defaultdict
 from spacy.matcher import Matcher
 import re
+from spacy.language import Language
+from spacy.matcher import Matcher
 
 @st.cache_resource
 def carica_risorse_spacy():
@@ -92,6 +94,11 @@ def text_preprocessing(testo):
   testo = re.sub(r'»', r' ', testo)
   testo = re.sub(r'\s+', ' ', testo)
   return testo
+
+@st.cache_data(hash_funcs={
+    Language: lambda model: model.meta["name"],
+    Matcher: lambda _: None
+})
 
 def locate_complexity(text, nlp_model, matcher_instance):
     text = text_preprocessing(text)
