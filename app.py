@@ -13,8 +13,8 @@ from collections import defaultdict
 from spacy.matcher import Matcher
 import re
 from spacy.language import Language
-from spacy.matcher import Matcher
 
+st.set_page_config(page_title="Analizzatore di Complessità Testuale", page_icon="📝", layout="wide")
 @st.cache_resource
 def carica_risorse_spacy():
     nlp = spacy.load("it_core_news_lg")
@@ -115,7 +115,6 @@ def locate_complexity(text, nlp_model, matcher_instance):
         ["in", "modo", "che"], ["a", "condizione", "che"], ["nel", "caso", "in", "cui"], ["prima", "che"],
         ["per", "quanto"], ["come", "se"], ["senza", "che"], ["a", "patto", "che"],
     ]
-    matches = matcher_instance(doc)
 
     # Regole per l'individuazione delle complessità
     rules = {
@@ -190,7 +189,7 @@ def locate_complexity(text, nlp_model, matcher_instance):
                 end = subtree[-1].idx + len(subtree[-1])
                 rules["frase_subordinata"]["spans"].append((start, end))
 
-    matches = matcher(doc)
+    matches = matcher_instance(doc)
     for match_id, start, end in matches:
         span = doc[start:end]
         head = span.root.head
