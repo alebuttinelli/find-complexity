@@ -14,7 +14,7 @@ from spacy.matcher import Matcher
 import re
 from spacy.language import Language
 
-st.set_page_config(page_title="Analizzatore di Complessità Testuale", page_icon="📝", layout="wide")
+st.set_page_config(page_title="Analizzatore di complessità testuale", layout="wide")
 @st.cache_resource
 def carica_risorse_spacy():
     nlp = spacy.load("it_core_news_lg")
@@ -95,14 +95,11 @@ def text_preprocessing(testo):
   testo = re.sub(r'\s+', ' ', testo)
   return testo
 
-@st.cache_data(hash_funcs={
-    Language: lambda model: model.meta["name"],
-    Matcher: lambda _: None
-})
+@st.cache_data
 
-def locate_complexity(text, nlp_model, matcher_instance):
+def locate_complexity(text, _nlp_model, _matcher_instance):
     text = text_preprocessing(text)
-    doc = nlp_model(text)
+    doc = _nlp_model(text)
     # Dizionari
     tecnicismi = {"nullità", "coattivo", "notificazione", "estinzione", "revocatorio"}
     arcaismi = {"corresponsione", "obliterare", "previo", "siffatto", "alcuno", "addì", "li", "dazione", "altresì"}
@@ -189,7 +186,7 @@ def locate_complexity(text, nlp_model, matcher_instance):
                 end = subtree[-1].idx + len(subtree[-1])
                 rules["frase_subordinata"]["spans"].append((start, end))
 
-    matches = matcher_instance(doc)
+    matches = _matcher_instance(doc)
     for match_id, start, end in matches:
         span = doc[start:end]
         head = span.root.head
